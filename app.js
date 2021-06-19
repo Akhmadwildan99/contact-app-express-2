@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const expressLayouts = require('express-ejs-layouts');
 const { body, validationResult, check } = require('express-validator');
-const {loadContact, findContact, addContact, cekDuplikat} = require('./utils/contacts');
+const {loadContact, findContact, addContact, cekDuplikat, deleteContact} = require('./utils/contacts');
 const session = require('express-session');
 const cookieParser = require("cookie-parser");
 const flash = require('connect-flash');
@@ -48,7 +48,7 @@ app.get('/contact', (req, res)=>{
         layout: 'layouts/main-layouts',
         title: 'halaman contact',
         contacts,
-        msg: req.flash('msg')
+        msg: req.flash('msg'),
     });
 }); 
 
@@ -86,10 +86,24 @@ app.post('/contact', [
         addContact(req.body);
         // kirim masage singkat
         req.flash('msg', 'Data contact bersail ditambahkan!');
-        res.redirect('contact');
+        res.redirect('/contact');
     }
 }
 );
+
+// Proses delete Contact
+
+app.get('/contact/delete/:nama', (req, res)=>{
+    const contact = findContact(req.params.nama);
+    if(!contact){
+        res.status(404);
+        res.send('<h1>404</h1>');
+    } else {
+        deleteContact(req.params.nama);
+        req.flash('msg', 'Data contact bersail dihapus!');
+        res.redirect('/contact');
+    }
+});
 
 app.get('/contact/:nama', (req, res)=>{
     const contact = findContact(req.params.nama);
