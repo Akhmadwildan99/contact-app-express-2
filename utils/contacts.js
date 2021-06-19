@@ -59,5 +59,15 @@ const deleteContact = (nama) => {
 
 }
 
+// Mennyimpan update contact
 
-module.exports = {loadContact, findContact, addContact, cekDuplikat, deleteContact};
+const updateContacts = (contactBaru) => {
+    const contacts = loadContact();
+    const filteredContact = contacts.filter((contact)=> contact.nama !== contactBaru.oldName);
+    delete contactBaru.oldName;
+    filteredContact.push(contactBaru);
+    saveContacts(filteredContact);
+}
+
+
+module.exports = {loadContact, findContact, addContact, cekDuplikat, updateContacts, deleteContact };
